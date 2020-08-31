@@ -18,8 +18,6 @@ connectDB();
 const app = express();
 
 app.use(express.json());
-app.use(errorHandler);
-// app.use('/api/v1/offers', offers);
 
 const PORT = process.env.PORT || 5000;
 
@@ -29,6 +27,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use('/api/v1/companies', companies);
+app.use('/api/v1/offers', offers);
+app.use(errorHandler);
 
 const server = app.listen(
   PORT,

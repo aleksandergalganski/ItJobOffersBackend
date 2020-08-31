@@ -6,8 +6,11 @@ const {
   deleteCompany,
   updateCompany
 } = require('../controllers/companies');
+const offersRouter = require('./offers');
 
 const router = express.Router();
+
+router.use('/:companyId/offers', offersRouter);
 
 router.route('/').get(getCompanies).post(createCompany);
 

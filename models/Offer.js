@@ -23,7 +23,7 @@ const OfferSchema = new mongoose.Schema({
     type: Number,
     min: [0, 'Maximum salary must be greater than 0']
   },
-  exprienceLevel: {
+  experienceLevel: {
     type: String,
     required: true,
     enum: ['Intern', 'Junior', 'Mid', 'Senior', 'Expert']
@@ -61,8 +61,8 @@ OfferSchema.pre('save', function (next) {
 });
 
 OfferSchema.pre('save', async function (next) {
-  const companyName = await Company.findById(this.company).name;
-  this.slug = slugify(this.name + companyName, { lower: true });
+  const company = await Company.findById(this.company);
+  this.slug = slugify(this.name + ' ' + company.name, { lower: true });
   next();
 });
 
