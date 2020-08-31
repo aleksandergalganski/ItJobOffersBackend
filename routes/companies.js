@@ -4,11 +4,10 @@ const {
   getCompanies,
   createCompany,
   deleteCompany,
-  updateCompany,
-  deleteCompany
+  updateCompany
 } = require('../controllers/companies');
 
-const router = express.router();
+const router = express.Router();
 
 router.route('/').get(getCompanies).post(createCompany);
 

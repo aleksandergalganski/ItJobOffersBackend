@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const CompanySchema = mongoose.Schema({
   name: {
@@ -75,6 +76,11 @@ const CompanySchema = mongoose.Schema({
     ]
   }
   //logo
+});
+
+CompanySchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
 });
 
 module.exports = mongoose.model('Company', CompanySchema);

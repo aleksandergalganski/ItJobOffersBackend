@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
+const Company = require('./Company');
+const ErrorResponse = require('../utils/errorResponse');
 
 const OfferSchema = new mongoose.Schema({
   name: {
@@ -51,11 +54,16 @@ const OfferSchema = new mongoose.Schema({
 
 OfferSchema.pre('save', function (next) {
   if (this.salaryMin >= this.salaryMax) {
-    const err = new Error('Maximum salary must be greater than minimum salary');
-    next(err);
+    next(new ErrorResponse('Maximum salary must be greater than minimum salary', 400));
   } else {
     next();
   }
+});
+
+OfferSchema.pre('save', async function (next) {
+  const companyName = await Company.findById(this.company).name;
+  this.slug = slugify(this.name + companyName, { lower: true });
+  next();
 });
 
 module.exports = mongoose.model('Offer', OfferSchema);

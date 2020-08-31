@@ -2,24 +2,33 @@ const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const colors = require('colors');
+const errorHandler = require('./middleware/error');
 const connectDB = require('./config/db');
 
-dotenv.config({ path: './config/config/env' });
-
-// connectDB();
-
+// Route files
 const offers = require('./routes/offers');
 const companies = require('./routes/companies');
+
+// Load env variables
+dotenv.config({ path: './config/config.env' });
+
+// Connect to db
+connectDB();
 
 const app = express();
 
 app.use(express.json());
+app.use(errorHandler);
+// app.use('/api/v1/offers', offers);
 
 const PORT = process.env.PORT || 5000;
 
+// Dev logging middleware
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+app.use('/api/v1/companies', companies);
 
 const server = app.listen(
   PORT,
