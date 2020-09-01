@@ -86,7 +86,7 @@ CompanySchema.pre('save', function (next) {
 
 // Delete all offers from company
 CompanySchema.pre('remove', async function (next) {
-  await Offer.deleteMany({ company: this._id });
+  await this.model('Offer').deleteMany({ company: this._id });
   next();
 });
 
