@@ -75,8 +75,11 @@ const CompanySchema = mongoose.Schema({
       /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
       'Please use a valid URL with HTTP or HTTPS'
     ]
+  },
+  logo: {
+    type: String,
+    default: 'no-logo.jpg'
   }
-  //logo
 });
 
 CompanySchema.pre('save', function (next) {
