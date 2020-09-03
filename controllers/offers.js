@@ -4,19 +4,71 @@ const ErrorResponse = require('../utils/errorResponse');
 
 exports.getOffers = async (req, res, next) => {
   try {
-    let query;
     if (req.params.companyId) {
-      query = Offer.find({ company: req.params.companyId });
-    } else {
-      query = Offer.find();
-    }
+      const offers = await Offer.find({ company: req.params.companyId });
 
-    const offers = await query;
-    res.status(200).json({
-      success: true,
-      count: offers.length,
-      data: offers
-    });
+      res.status(200).json({
+        success: true,
+        count: offers.length,
+        data: offers
+      });
+    } else {
+      const reqQuery = { ...req.query };
+      const fieldsToRemove = ['select', 'sort', 'page', 'limit'];
+      fieldsToRemove.forEach(param => delete reqQuery[param]);
+      let queryStr = JSON.stringify(reqQuery);
+      queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+
+      let query = Offer.find(JSON.parse(queryStr));
+
+      // Select fields
+      if (req.query.select) {
+        const fields = req.query.select.split(',').join(' ');
+        query = query.select(fields);
+      }
+
+      // Sort
+      if (req.query.sort) {
+        const sortBy = req.query.sort.split(',').join(' ');
+        query = query.sort(sortBy);
+      } else {
+        query = query.sort('-createdAt');
+      }
+
+      // Pagination
+      const page = parseInt(req.query.page, 10) || 1;
+      const limit = parseInt(req.query.limit, 10) || 3;
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+      const total = await Offer.countDocuments();
+
+      query = query.skip(startIndex).limit(limit);
+
+      const pagination = {};
+
+      if (endIndex < total) {
+        pagination.next = {
+          page: page + 1,
+          limit
+        };
+      }
+
+      if (startIndex > 0) {
+        pagination.prev = {
+          page: page - 1,
+          limit
+        };
+      }
+
+      const offers = await query;
+
+      res.status(200).json({
+        success: true,
+        count: offers.length,
+        pagination,
+        data: offers
+      });
+    }
   } catch (err) {
     next(err);
   }
