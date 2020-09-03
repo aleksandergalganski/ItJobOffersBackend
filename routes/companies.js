@@ -8,15 +8,20 @@ const {
   uploadCompanyLogo
 } = require('../controllers/companies');
 const offersRouter = require('./offers');
+const { protect } = require('../middleware/auth');
 
 const router = express.Router();
 
 router.use('/:companyId/offers', offersRouter);
 
-router.route('/').get(getCompanies).post(createCompany);
+router.route('/').get(getCompanies).post(protect, createCompany);
 
-router.route('/:id').get(getCompany).put(updateCompany).delete(deleteCompany);
+router
+  .route('/:id')
+  .get(getCompany)
+  .put(protect, updateCompany)
+  .delete(protect, deleteCompany);
 
-router.route('/:id/logo').put(uploadCompanyLogo);
+router.route('/:id/logo').put(protect, uploadCompanyLogo);
 
 module.exports = router;

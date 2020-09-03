@@ -23,6 +23,11 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  role: {
+    type: String,
+    enum: ['publisher'],
+    default: 'publisher'
+  },
   resetPasswordToken: String,
   resetPasswordExpire: Date
 });
@@ -38,8 +43,8 @@ UserSchema.methods.getSignedJwtToken = function () {
   });
 };
 
-UserSchema.methods.matchPassword = async function (enterdPassword) {
-  return await bcrypt.compare(enterdPassword, this.password);
+UserSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
 };
 
 module.exports = mongoose.model('User', UserSchema);

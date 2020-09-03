@@ -4,12 +4,14 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const colors = require('colors');
 const fileUpload = require('express-fileupload');
+const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error');
 const connectDB = require('./config/db');
 
 // Route files
 const offers = require('./routes/offers');
 const companies = require('./routes/companies');
+const auth = require('./routes/auth');
 
 // Load env variables
 dotenv.config({ path: './config/config.env' });
@@ -20,6 +22,7 @@ connectDB();
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 const PORT = process.env.PORT || 5000;
 
@@ -33,8 +36,11 @@ app.use(fileUpload());
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Mount routers
 app.use('/api/v1/companies', companies);
 app.use('/api/v1/offers', offers);
+app.use('/api/v1/auth', auth);
+
 app.use(errorHandler);
 
 const server = app.listen(

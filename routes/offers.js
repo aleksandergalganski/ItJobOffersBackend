@@ -7,11 +7,20 @@ const {
   updateOffer,
   deleteOffer
 } = require('../controllers/offers');
+const { protect, checkRole } = require('../middleware/auth');
 
 const router = express.Router({ mergeParams: true });
 
-router.route('/').get(getOffers).post(createOffer).delete(deleteOffers);
+router
+  .route('/')
+  .get(getOffers)
+  .post(protect, createOffer)
+  .delete(protect, checkRole('admin'), deleteOffers);
 
-router.route('/:offerId').get(getOffer).put(updateOffer).delete(deleteOffer);
+router
+  .route('/:offerId')
+  .get(getOffer)
+  .put(protect, updateOffer)
+  .delete(protect, deleteOffer);
 
 module.exports = router;
