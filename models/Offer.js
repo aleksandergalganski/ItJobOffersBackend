@@ -62,7 +62,7 @@ OfferSchema.pre('save', function (next) {
 
 OfferSchema.pre('save', async function (next) {
   const company = await Company.findById(this.company);
-  this.slug = slugify(this.name + ' ' + company.name, { lower: true });
+  this.slug = slugify(this.name + ' ' + company.name + ' ' + this._id, { lower: true });
   next();
 });
 

@@ -60,6 +60,12 @@ exports.getOffers = async (req, res, next) => {
         };
       }
 
+      // Company name
+      query = Offer.find().populate({
+        path: 'company',
+        select: 'name logo'
+      });
+
       const offers = await query;
 
       res.status(200).json({
