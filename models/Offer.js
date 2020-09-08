@@ -28,6 +28,10 @@ const OfferSchema = new mongoose.Schema({
     required: true,
     enum: ['Intern', 'Junior', 'Mid', 'Senior', 'Expert']
   },
+  category: {
+    type: String,
+    required: [true, 'Please add a category']
+  },
   mustHave: {
     type: [String]
   },
