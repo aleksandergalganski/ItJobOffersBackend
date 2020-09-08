@@ -14,9 +14,21 @@ exports.getOffers = async (req, res, next) => {
       });
     } else {
       const reqQuery = { ...req.query };
-      const fieldsToRemove = ['select', 'sort', 'page', 'limit'];
-      fieldsToRemove.forEach(param => delete reqQuery[param]);
+
+      const removeFields = ['select', 'sort', 'page', 'limit'];
+
+      removeFields.forEach(param => delete reqQuery[param]);
+
+      if (reqQuery.mustHave) {
+        reqQuery.mustHave.in = reqQuery.mustHave.in.split(',');
+      }
+
+      if (reqQuery.niceToHave) {
+        reqQuery.niceToHave.in = reqQuery.niceToHave.in.split(',');
+      }
+
       let queryStr = JSON.stringify(reqQuery);
+
       queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
 
       let query = Offer.find(JSON.parse(queryStr));
@@ -61,7 +73,7 @@ exports.getOffers = async (req, res, next) => {
       }
 
       // Company name
-      query = Offer.find().populate({
+      query = query.populate({
         path: 'company',
         select: 'name logo'
       });
