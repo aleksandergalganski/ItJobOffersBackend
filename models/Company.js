@@ -31,9 +31,22 @@ const CompanySchema = mongoose.Schema({
     required: [true, 'Please add a year of founding company'],
     min: [0, 'Year of founding company must be greater than 0']
   },
-  address: {
+  city: {
     type: String,
-    required: [true, 'Please add an address']
+    required: [true, 'Please add a city']
+  },
+  postCode: {
+    type: String,
+    required: [true, 'Please add a post code'],
+    match: [/^[0-9]{2}-[0-9]{3}$/, 'Please add a valid polish post code']
+  },
+  street: {
+    type: String,
+    required: [true, 'Please add a street name']
+  },
+  streetNumber: {
+    type: String,
+    required: [true, 'Please add a street number']
   },
   technologies: {
     type: [String],

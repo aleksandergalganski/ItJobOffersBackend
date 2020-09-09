@@ -38,9 +38,22 @@ const OfferSchema = new mongoose.Schema({
   niceToHave: {
     type: [String]
   },
-  address: {
+  city: {
     type: String,
-    required: [true, 'Please add an address']
+    required: [true, 'Please add a city']
+  },
+  postCode: {
+    type: String,
+    required: [true, 'Please add a post code'],
+    match: [/^[0-9]{2}-[0-9]{3}$/, 'Please add a valid polish post code']
+  },
+  street: {
+    type: String,
+    required: [true, 'Please add a street name']
+  },
+  streetNumber: {
+    type: String,
+    required: [true, 'Please add a street number']
   },
   isRemote: {
     type: Boolean,
