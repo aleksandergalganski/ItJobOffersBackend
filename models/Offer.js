@@ -88,4 +88,9 @@ OfferSchema.pre('save', async function (next) {
   next();
 });
 
+OfferSchema.pre('remove', async function (next) {
+  await this.model('Application').deleteMany({ offer: this._id });
+  next();
+});
+
 module.exports = mongoose.model('Offer', OfferSchema);
