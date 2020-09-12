@@ -2,25 +2,24 @@ const express = require('express');
 const {
   getOffers,
   deleteOffers,
-  getOffer,
+  getOfferById,
   createOffer,
   updateOffer,
-  deleteOffer
+  deleteOffer,
+  getOfferBySlug
 } = require('../controllers/offers');
 const { protect, checkRole } = require('../middleware/auth');
 
 const router = express.Router({ mergeParams: true });
 
-router
-  .route('/')
-  .get(getOffers)
-  .post(protect, createOffer)
-  .delete(protect, checkRole('admin'), deleteOffers);
+router.route('/').get(getOffers).post(protect, createOffer).delete(protect, deleteOffers);
 
 router
   .route('/:offerId')
-  .get(getOffer)
+  .get(getOfferById)
   .put(protect, updateOffer)
   .delete(protect, deleteOffer);
+
+router.route('/slug/:slug').get(getOfferBySlug);
 
 module.exports = router;

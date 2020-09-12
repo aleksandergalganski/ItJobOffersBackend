@@ -10,7 +10,11 @@ const OfferSchema = new mongoose.Schema({
     trim: true,
     maxlength: [50, 'Name can not be more than 100 characters']
   },
-  slug: String,
+  slug: {
+    type: String,
+    required: true,
+    unique: true
+  },
   description: {
     type: String,
     required: [true, 'Please add a description']
@@ -65,7 +69,8 @@ const OfferSchema = new mongoose.Schema({
   },
   company: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Company'
+    ref: 'Company',
+    required: true
   }
 });
 

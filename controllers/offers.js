@@ -49,7 +49,7 @@ exports.getOffers = async (req, res, next) => {
 
       // Pagination
       const page = parseInt(req.query.page, 10) || 1;
-      const limit = parseInt(req.query.limit, 10) || 10;
+      const limit = parseInt(req.query.limit, 10) || 12;
       const startIndex = (page - 1) * limit;
       const endIndex = page * limit;
       const total = await Offer.countDocuments();
@@ -101,7 +101,7 @@ exports.deleteOffers = async (req, res, next) => {
   }
 };
 
-exports.getOffer = async (req, res, next) => {
+exports.getOfferById = async (req, res, next) => {
   try {
     const id = req.params.offerId;
     const offer = await Offer.findById(id);
@@ -110,6 +110,24 @@ exports.getOffer = async (req, res, next) => {
       res.status(200).json({ success: true, data: offer });
     } else {
       next(new ErrorResponse(`No offer with the id of ${id}`, 404));
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getOfferBySlug = async (req, res, next) => {
+  try {
+    const slug = req.params.slug;
+    const offer = await Offer.findOne({ slug }).populate({
+      path: 'company',
+      select: 'name logo companySize description'
+    });
+
+    if (offer) {
+      res.status(200).json({ success: true, data: offer });
+    } else {
+      next(new ErrorResponse(`No offer with the slug ${slug}`, 404));
     }
   } catch (err) {
     next(err);
@@ -139,6 +157,10 @@ exports.updateOffer = async (req, res, next) => {
     let offer = await Offer.findById(id);
 
     if (offer) {
+      if (!isOwnerOrAdmin(req, offer)) {
+        return next(new ErrorResponse('Not Owner or Admin', 401));
+      }
+
       offer = await Offer.findByIdAndUpdate(id, req.body, {
         new: true,
         runValidators: true
@@ -162,6 +184,10 @@ exports.deleteOffer = async (req, res, next) => {
     const offer = await Offer.findById(id);
 
     if (offer) {
+      if (!isOwnerOrAdmin(req, offer)) {
+        return next(new ErrorResponse('Not Owner or Admin', 401));
+      }
+
       await Offer.remove();
 
       res.status(200).json({
@@ -174,4 +200,10 @@ exports.deleteOffer = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+const isOwnerOrAdmin = (req, offer) => {
+  const userId = req.user.id;
+  const company = offer.company.toString();
+  return userId === company.user.toString() || req.user.role === 'admin';
 };

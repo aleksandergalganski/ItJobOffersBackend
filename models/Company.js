@@ -22,10 +22,6 @@ const CompanySchema = mongoose.Schema({
       'Please use a valid URL with HTTP or HTTPS'
     ]
   },
-  mainLocation: {
-    type: String,
-    required: [true, 'Please add a main location']
-  },
   foundedIn: {
     type: Number,
     required: [true, 'Please add a year of founding company'],
@@ -92,6 +88,11 @@ const CompanySchema = mongoose.Schema({
   logo: {
     type: String,
     default: 'no-logo.jpg'
+  },
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+    required: true
   }
 });
 

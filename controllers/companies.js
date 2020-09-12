@@ -1,6 +1,7 @@
 const path = require('path');
 const Company = require('../models/Company');
 const ErrorResponse = require('../utils/errorResponse');
+const { findByIdAndUpdate } = require('../models/Company');
 
 exports.getCompanies = async (req, res, next) => {
   const companies = await Company.find();
@@ -28,7 +29,17 @@ exports.getCompany = async (req, res, next) => {
 
 exports.createCompany = async (req, res, next) => {
   try {
-    const company = await Company.create(req.body);
+    // Add current logged in user to company
+    req.body.user = req.user._id;
+
+    // User can only have one company
+    let company = await Company.findOne({ user: req.user._id });
+
+    if (company) {
+      return next(new ErrorResponse('User can only have one company', 400));
+    }
+
+    company = await Company.create(req.body);
     res.status(201).json({ success: true, data: company });
   } catch (err) {
     next(err);
@@ -38,12 +49,18 @@ exports.createCompany = async (req, res, next) => {
 exports.updateCompany = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const company = await Company.findByIdAndUpdate(id, req.body, {
-      new: true,
-      runValidators: true
-    });
+    let company = await Company.findByIdAndUpdate(id);
 
     if (company) {
+      if (!isOwnerOrAdmin(req, company)) {
+        return next(new ErrorResponse('Not Onwer or Admin', 401));
+      }
+
+      company = await Company.findByIdAndUpdate(id, req.body, {
+        new: true,
+        runValidators: true
+      });
+
       res.status(200).json({ success: true, data: company });
     } else {
       next(new ErrorResponse(`Company not found with the id of ${id}`, 404));
@@ -59,6 +76,10 @@ exports.deleteCompany = async (req, res, next) => {
     const company = await Company.findById(id);
 
     if (company) {
+      if (!isOwnerOrAdmin(req, company)) {
+        return next(new ErrorResponse('Not Onwer or Admin', 401));
+      }
+
       await company.remove();
       res.status(200).json({ success: true, data: {} });
     } else {
@@ -110,3 +131,6 @@ exports.uploadCompanyLogo = async (req, res, next) => {
     next(err);
   }
 };
+
+const isOwnerOrAdmin = (req, company) =>
+  req.user.id === company.user.toString() || req.user.role === 'admin';
