@@ -1,15 +1,18 @@
 const path = require('path');
 const Company = require('../models/Company');
 const ErrorResponse = require('../utils/errorResponse');
-const { findByIdAndUpdate } = require('../models/Company');
 
 exports.getCompanies = async (req, res, next) => {
-  const companies = await Company.find();
-  res.status(200).json({
-    success: true,
-    count: companies.length,
-    data: companies
-  });
+  try {
+    const companies = await Company.find();
+    res.status(200).json({
+      success: true,
+      count: companies.length,
+      data: companies
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.getCompany = async (req, res, next) => {
