@@ -182,13 +182,14 @@ exports.deleteOffer = async (req, res, next) => {
   const id = req.params.offerId;
   try {
     const offer = await Offer.findById(id);
+    console.log(offer);
 
     if (offer) {
       if (!isOwnerOrAdmin(req, offer)) {
         return next(new ErrorResponse('Not Owner or Admin', 401));
       }
 
-      await Offer.remove();
+      await offer.remove();
 
       res.status(200).json({
         success: true,
@@ -202,8 +203,10 @@ exports.deleteOffer = async (req, res, next) => {
   }
 };
 
-const isOwnerOrAdmin = (req, offer) => {
+const isOwnerOrAdmin = async (req, offer) => {
   const userId = req.user.id;
-  const company = offer.company.toString();
+  const companyId = offer.company;
+  const company = await Company.findById(companyId);
+
   return userId === company.user.toString() || req.user.role === 'admin';
 };

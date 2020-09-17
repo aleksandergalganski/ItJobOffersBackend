@@ -54,7 +54,8 @@ const CompanySchema = mongoose.Schema({
     match: [
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       'Please add a valid email'
-    ]
+    ],
+    unique: true
   },
   createdAt: {
     type: Date,
@@ -89,6 +90,7 @@ const CompanySchema = mongoose.Schema({
     type: String,
     default: 'no-logo.jpg'
   },
+  logoUrl: String,
   user: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',

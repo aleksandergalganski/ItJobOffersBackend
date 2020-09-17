@@ -5,7 +5,8 @@ const {
   createCompany,
   deleteCompany,
   updateCompany,
-  uploadCompanyLogo
+  uploadCompanyLogo,
+  getCompanyByUserId
 } = require('../controllers/companies');
 const offersRouter = require('./offers');
 const { protect } = require('../middleware/auth');
@@ -21,6 +22,8 @@ router
   .get(getCompany)
   .put(protect, updateCompany)
   .delete(protect, deleteCompany);
+
+router.get('/user/:userId', getCompanyByUserId);
 
 router.route('/:id/logo').put(protect, uploadCompanyLogo);
 

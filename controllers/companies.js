@@ -4,7 +4,7 @@ const ErrorResponse = require('../utils/errorResponse');
 
 exports.getCompanies = async (req, res, next) => {
   try {
-    const companies = await Company.find();
+    const companies = await Company.find(req.query);
     res.status(200).json({
       success: true,
       count: companies.length,
@@ -24,6 +24,21 @@ exports.getCompany = async (req, res, next) => {
       res.status(200).json({ success: true, data: company });
     } else {
       next(new ErrorResponse(`Company not found with the id of ${id}`, 404));
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getCompanyByUserId = async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+    const company = await Company.findOne({ user: userId });
+
+    if (company) {
+      res.status(200).json({ success: true, data: company });
+    } else {
+      next(new ErrorResponse(`Company not found with the user id of ${userId}`, 404));
     }
   } catch (err) {
     next(err);
@@ -109,7 +124,8 @@ exports.uploadCompanyLogo = async (req, res, next) => {
                 next(new ErrorResponse('Problem with file upload', 500));
               } else {
                 await Company.findOneAndUpdate(req.params.id, {
-                  logo: file.name
+                  logo: file.name,
+                  logoUrl: `${req.protocol}://${req.get('host')}/uploads/${file.name}`
                 });
                 res.status(200).json({ success: true, data: file.name });
               }

@@ -12,7 +12,6 @@ const OfferSchema = new mongoose.Schema({
   },
   slug: {
     type: String,
-    required: true,
     unique: true
   },
   description: {
@@ -30,7 +29,7 @@ const OfferSchema = new mongoose.Schema({
   experienceLevel: {
     type: String,
     required: true,
-    enum: ['Intern', 'Junior', 'Mid', 'Senior', 'Expert']
+    enum: ['Intern', 'Junior', 'Mid', 'Senior']
   },
   category: {
     type: String,
@@ -43,21 +42,17 @@ const OfferSchema = new mongoose.Schema({
     type: [String]
   },
   city: {
-    type: String,
-    required: [true, 'Please add a city']
+    type: String
   },
   postCode: {
     type: String,
-    required: [true, 'Please add a post code'],
     match: [/^[0-9]{2}-[0-9]{3}$/, 'Please add a valid polish post code']
   },
   street: {
-    type: String,
-    required: [true, 'Please add a street name']
+    type: String
   },
   streetNumber: {
-    type: String,
-    required: [true, 'Please add a street number']
+    type: String
   },
   isRemote: {
     type: Boolean,
