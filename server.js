@@ -9,6 +9,7 @@ const helmet = require('helmet');
 const xssClean = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
+const mongoSanitize = require('express-mongo-sanitize');
 const cors = require('cors');
 const errorHandler = require('./middleware/error');
 const connectDB = require('./config/db');
