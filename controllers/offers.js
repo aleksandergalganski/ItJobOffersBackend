@@ -72,10 +72,10 @@ exports.getOffers = async (req, res, next) => {
         };
       }
 
-      // Company name
+      // Company
       query = query.populate({
         path: 'company',
-        select: 'name logo'
+        select: 'name logo logoUrl'
       });
 
       const offers = await query;
@@ -182,7 +182,6 @@ exports.deleteOffer = async (req, res, next) => {
   const id = req.params.offerId;
   try {
     const offer = await Offer.findById(id);
-    console.log(offer);
 
     if (offer) {
       if (!isOwnerOrAdmin(req, offer)) {
