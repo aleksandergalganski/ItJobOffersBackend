@@ -15,12 +15,12 @@ Create file config.env in config folder and add following properties:
 - JWT_EXPIRE
 - JWT_COOKIE_EXPIRE
 
-'''
+'''bash
 npm install
 '''
 
 ## Run
 
-'''
+'''bash
 npm run dev
 '''
