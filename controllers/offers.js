@@ -121,7 +121,7 @@ exports.getOfferBySlug = async (req, res, next) => {
     const slug = req.params.slug;
     const offer = await Offer.findOne({ slug }).populate({
       path: 'company',
-      select: 'name logo companySize description'
+      select: 'name logo companySize description logoUrl'
     });
 
     if (offer) {
