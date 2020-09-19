@@ -123,7 +123,7 @@ exports.uploadCompanyLogo = async (req, res, next) => {
               if (err) {
                 next(new ErrorResponse('Problem with file upload', 500));
               } else {
-                await Company.findOneAndUpdate(req.params.id, {
+                await Company.findByIdAndUpdate(req.params.id, {
                   logo: file.name,
                   logoUrl: `${req.protocol}://${req.get('host')}/uploads/${file.name}`
                 });
