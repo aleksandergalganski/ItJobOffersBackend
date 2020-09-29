@@ -2,6 +2,13 @@
 
 > Backend for ItJobOffers Frontend application written in Angular.
 
+# Technologies 
+
+- JavaScript
+- NodeJS
+- ExpressJS
+- MongoDB
+
 ## Installation
 
 Create file config.env in config folder and add following properties:
